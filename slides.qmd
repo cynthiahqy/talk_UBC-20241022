@@ -1,0 +1,449 @@
+---
+title: "Visualising Category Recoding Graphs for Data Harmonisation"
+author:
+  - name: Cynthia A. Huang
+    orcid: 0000-0002-9218-987X
+    email: cynthia.huang@monash.edu
+    affiliation:
+      - Department of Econometrics and Business Statistics
+      - "supervised by Rob J Hyndman, Sarah Goodwin and Simon Angus"
+bibliography: references.bib
+format:
+  presentation-revealjs+letterbox:
+    theme: [default, style/custom.scss]
+    #css: "style/custom.css"
+filters:
+  - include-code-files
+---
+
+## About Me!
+
+::: incremental
+- 👩‍🎓 Final Year PhD Candidate, supervised by, and affiliated with: 
+  - [Prof. Rob Hyndman](https://robjhyndman.com), Econometrics & Business Statistics
+    - [NUMBATs](https://numbat.space/about.html), Non-Uniform Monash *Business Analytics* Team
+  - [Prof Simon Angus](https://research.monash.edu/en/persons/simon-angus), Economics
+    - [SoDa Laboratories](https://www.monash.edu/business/impact-labs/soda-labs/about-us), *alternative data for social science insights*
+  - [Dr. Sarah Goodwin](https://research.monash.edu/en/persons/sarah-goodwin), Human Centered Computing
+    - [Embodied Visualisation group](https://www.monash.edu/it/hcc/embodied-visualisation), *immersive technologies for data analysis*
+- 💱 Previously: Economics at Unimelb
+  <!-- - Also supported by [Monash Data Futures Institute](https://www.monash.edu/data-futures-institute) -->
+:::
+
+## About Me!
+
+::: incremental
+- 👩‍🎓 Thesis: _Unified Statistical Principles and Computational Tools for Data Harmonisation and Provenance_
+  - 🖇️ Data Wrangling and Provenance approaches that incorporate statistical and computational workflow considerations.
+  - 🌰 Statistically sound, well-documented and low-friction adaptation of "alternative" data for empirical research.
+  - 🤔 Provenance (approaches, tools and concepts) Across Domains
+  - 🔀 **Unified Framework for recoding and redistributing numeric data between categories**
+:::
+
+# Visualising Category Recoding and Redistributions
+
+Previously presented at VISxPROV Workshop 2023 [<arXiv:2308.06535>](https://arxiv.org/abs/2308.06535v1)
+
+## Overview
+::: {.columns}
+::: {.column width="33.33%"}
+
+[Domain Context]{.overview-text}
+![](images/illustrations/icon-official-stats.png){fig-align="center" height=300px style="margin: 0; padding: 0;"}
+
+[Defining or selecting mappings between classifications or taxonomies,]{.fragment}
+:::
+
+::: {.column width="33.33%"}
+[Task Abstraction]{.overview-text}
+![](images/illustrations/icon-database.png){fig-align="center" height=300px style="margin: 0; padding: 0;"}
+
+[Implementing and validating mappings on given data,]{.fragment}
+:::
+
+::: {.column width="33.33%"}
+[Encoding Design]{.overview-text}
+![](images/illustrations/icon-IEEE-VIS.png){fig-align="center" height=300px style="margin: 0; padding: 0;"}
+
+[Documenting and analysing the implemented mapping.]{.fragment}
+::: 
+
+:::
+
+## Ex-Post Harmonisation
+
+::: {.columns .v-center-container}
+
+::: {.column width="45%"}
+
+> Ex-post (or retrospective) data harmonization refers to **procedures applied to already collected data to improve the comparability** and inferential equivalence of measures from different studies [@kolczynskaCombiningMultipleSurvey2022]
+
+:::
+
+::: {.column width="55%"}
+
+![Stylised Tasks in Ex-Post Harmonisation](images/illustrations/diagram_ex-post-process.png){#fig-expost-tasks fig-align="center"}
+
+:::
+
+:::
+
+## Example: Occupation Code Mappings
+
+::: notes
+Harmonisation requires numeric redistribution in addition to "categorical" recoding.
+:::
+
+```{r}
+#| label: set-up-anzsco
+#| echo: false
+#| message: false
+#| file: includes/anzsco-example.R
+```
+
+::: {.columns .v-center-container}
+::: {.column width=40%}
+Stylised Occupation Level Counts
+
+::: smaller
+```{r}
+## stylised occupation counts 
+## from total of 2000 observed individuals
+xmap::demo$anzsco22_stats |> 
+  kableExtra::kable()
+```
+
+aggregated from **2000** individual responses.
+:::
+:::
+
+::: {.column width="60%"}
+Lookup Table between ANZSCO22 to ISCO8
+
+![](images/plots/image-isco-table.png)
+:::
+::: 
+
+## Recoding and Redistribution
+
+::: {.columns .v-center-container}
+::: {.column width="45%"}
+![Augmented extract from ABS ANZSCO22-ISCO8 crosswalk](images/plots/image-isco-bigraph.png){#fig-anzsco-isco-bigraph}
+:::
+::: {.column width="55%"}
+
+[Possible "relations" from **source** ANZSCO22 to **target** ISCO8 codes]{.fragment}
+
+:::{.incremental}
+- *from-***one-to-one*****-unique***: renaming (e.g. middle link)
+- *from-***one-to-one*****-shared*** aggregation (e.g. bottom three links)
+- *from-***one-to-many** disambiguation or redistribution (e.g. top links)
+:::
+
+:::
+:::
+
+
+## Current Workflows
+
+![](images/illustrations/diagram_current-workflow.png){fig-align="center"}
+
+## Current Workflows
+
+``` {.stata include="includes/schott_algorithm_28.do" filename="schott_algorithm_28.do [800+ lines]"}
+```
+
+
+# Conceptual Solution
+
+Crossmaps Framework & Task Abstraction
+
+<!-- pull from numbats talk -->
+
+## Considerations for Ex-Post Harmonisation {visibility="hidden"}
+<!-- 
+When curating and analysing harmonised data, there are a number of goals and constraints: -->
+::: notes
+- **Common (and time-consuming) task** in social science research
+- Downstream **analysis results depend on category mapping decisions**, but this is not currently systematically explored
+- Ex-Post Harmonisation is **complex data imputation** disguised as data pre-processing drudgery
+:::
+
+::: incremental
+- **statistical validity:**
+    - downstream analysis results depend on category mapping decisions
+    - numeric redistribution is _complex missing data imputation_
+- **data handling:**
+    - _data enginnering, wrangling, validation_ should support correct implementation of mappings
+- **transparency and provenance:**
+    - documentation of harmonisation strategy is key for _reproducility, replicability and re-usability_
+:::
+
+## Proposed Solution: Crossmaps
+
+![](images/illustrations/diagram_framework-workflow.png){fig-align="center"}
+
+## Using Graphs as Lookups to Transform Data
+
+::: notes
+- examine and **visualise** matrix, table, or node-link graph representations
+- separates mapping specification from implementation
+- validate via graph properties rather than code review
+:::
+
+![](images/illustrations/diagram_crossmap-transform-latex.png){fig-align="center"}
+
+::: smaller
+Preprint: [A Unified Statistical And Computational Framework For Ex-Post Harmonisation Of Aggregate Statistics <arXiv:2406.14163>](https://arxiv.org/abs/2406.14163)
+:::
+
+## Insights from Equivalent Encodings
+
+::: notes
+- unified approach to:
+    - transformation auditing (data quality)
+    - transformation documentation (data provenance)
+    - data imputation modelling (statistical robustness)
+:::
+
+::: {.columns}
+::: {.column width=55%}
+
+![Poster: [Crossmaps: A principled approach to ex-post data harmonisation and dataset integration. <10.5281/zenodo.13968832>](https://doi.org/10.5281/zenodo.13968833)](images/screenshots/asc-poster-basic-implications.png){fig-align="center"}
+:::
+::: {.column width=45%}
+::: {.incremental}
+* **Graphs for documentation**
+  - Crossmap visualisation and interaction
+* **Matrix multiplication for auditing**
+  - Linear mapping properties [[@hulligerLinkingClassificationsLinear1998]]{.f50}
+* **Edge lists for efficiency**
+  - Transformation via SQL queries [[@zhouMatrixMultiplicationSQL2020]]{.f50}
+:::
+:::
+
+:::
+
+
+
+# Discussion & Future Work
+
+Visual Encoding Design and Other Implications
+
+## Opportunities in Stats, CS and Data Science
+
+::: notes
+what separating logic and implementation gets you
+:::
+
+::: {.v-center-container}
+:::{layout="[[-5,88,-5],[-5,90,-5],[-5,10,10,20,-5], [-5,10,10,20,-5]]" layout-align="center"}
+
+[Domain Problem: *Ex-Post Harmonisation*]{.button-green-light .fragment fragment-index=1}
+
+[Task Abstraction & Representation: *Crossmaps*]{.button-green .fragment .fragment fragment-index=2}
+
+[Documenting & Auditing]{.button-blue .fragment}
+
+[Interactive Tools]{.button-blue .fragment}
+
+[Data Imputation Models]{.button-orange .fragment fragment-index=3}
+
+[Floating Point Representations]{.button-blue .fragment}
+
+[Visual Encoding]{.button-blue .fragment}
+
+[Sensitivity and Robustness Analysis]{.button-orange .fragment fragment-index=4}
+
+:::
+:::
+
+## Prototype Workflow Implementation in R
+
+::: {.columns}
+::: {.column .smaller}
+
+**`{xmap}` features:**
+
+Specify and Validate Mappings
+
+- `as_xmap_tbl()`
+- `diagnose_as_xmap_tbl()`
+
+<!-- ![](images/illustrations/plot_aus-split.png) -->
+
+Match and Apply Transformations
+
+- `apply_xmap()`
+- `diagnose_apply_xmap()`
+
+[at [github.com/cynthiahqy/xmap](https://github.com/cynthiahqy/xmap)]{.smaller}
+:::
+::: {.column .fragment}
+**But missing...**
+
+::: {.incremental}
+- graph and matrix classes
+- symbolic fractional weights
+- logic extraction from existing scripts
+- handling collections of crossmaps
+- analysis of crossmap properties
+- graph visualisation and editing
+:::
+
+:::
+:::
+
+## Proposed Visual Encodings for Crossmaps
+
+::: {.columns}
+::: {.column width="45%"}
+![](images/plots/plot-anzsco-isco-bigraph-with-table.png)
+:::
+::: {.column width="55%"}
+
+Use visual channels such as **layout/ordering, text style, line style, colour saturation, and annotations** to highlight key preprocessing decisions:
+
+:::{.incremental}
+- which data are split vs. not split?
+- what are the **split proportions**?
+- what is the **composition** of the transformed data?
+:::
+
+
+:::
+:::
+
+## Future Work: Graphs Tools for Crossmaps
+
+::: {.columns}
+::: {.column width=70%}
+
+- *data provenance documentation*
+    - multi-layer graph layouts
+    - summaries of graph properties
+- *authoring and auditing mappings*
+    - interactive (multi-table) data harmonisation
+    - validating and correcting invalid mappings
+
+Could leverage existing graph layout research e.g.,[@zarateOptimalSankeyDiagrams2018; @wilsonEvaluatingExtendingSpeedup2024]
+
+:::
+::: {.column width=30%}
+
+![](images/screenshots/screenshot_visxprov-ctry-sankey-alluvial.png)
+
+![](images/screenshots/screenshot_visxprov-ctry-proposed.png)
+
+<!-- ![](images/screenshots/diagram_missing-val-bigraph.png) -->
+:::
+:::
+
+## Future Work: Quality of Merged Datasets
+
+::: {.columns}
+::: {.column}
+Use Crossmaps to quantify, communicate and explore:
+
+- Degree of "missing data" imputation
+- "Location" of imputation in merged datasets
+- Stability of analysis results to alternative mappings
+
+:::
+::: {.column}
+
+![](images/plots/plot-isiccomb-split-by-income-groups.png)
+:::
+:::
+
+## Summary
+
+:::: {.columns}
+:::{.column width=60%}
+::: incremental
+- Ex-Post Harmonisation is a complex form of data imputation!
+- Graph, matrix and tabular encodings offer complementary insights
+- Visualisation and interaction design are needed to realise the potential of the crossmaps framework
+:::
+:::
+:::{.column width="5%"}
+:::
+::: {.column .smaller width="35%" .fragment}
+**Related writings and talks** 
+
+- VISxPROV workshop paper: [arXiv:2308.06535](https://arxiv.org/abs/2308.06535)
+- Framework formalisation preprint: [arXiv:2406.14163](https://arxiv.org/abs/2406.14163)
+- Implications poster: [10.5281/zenodo.13968833](https://doi.org/10.5281/zenodo.13968833)
+- Presentations on crossmaps: [talks.cynthiahqy.com](https://talks.cynthiahqy.com/#category=crossmaps)
+:::
+::::
+
+## Thanks for Listening!
+:::: {.columns}
+::: {.column width="30%"}
+
+![](includes/headshot-cynthia.jpg){style="border-radius:50%" height="400px" fig-align="center"}
+:::
+
+::: {.column width="70%"}
+I'm looking for design and implementation **ideas** and **collaborators**. 
+
+Find me at: 
+
+- [cynthiahqy.com](https://cynthiahqy.com), 
+- [\@cynthiahqy](https://twitter/cynthiahqy) and 
+- *cynthia.huang[at]monash.edu*.
+
+I'm here in Vancouver until the end of November!
+:::
+
+::::
+
+
+
+# References
+
+:::{#refs}
+:::
+
+# Appendix
+
+## Transformation via SQL-style commands
+
+:::: {.columns}
+::: {.column}
+
+:::{#lst-sql-matvec}
+``` {.sql}
+SELECT E.k as k, sum(E.w * S.x) as y
+FROM E JOIN S AS E.j=S.j
+GROUP BY E.k
+```
+Query Implementation of Matrix-Vector Multiplication. Adapted from @zhouMatrixMultiplicationSQL2020.
+:::
+
+:::
+::: {.column}
+
+
+:::{#lst-r-apply}
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: "3-6|7|8,9"
+apply_xmap <- function(.data, .xmap) {
+    dplyr::left_join(
+        x = .data,
+        y = .xmap,
+        by = "anzsco22") |>
+        dplyr::mutate(part_count = count * weights) |>
+        dplyr::group_by(isco8) |>
+        dplyr::summarise(new_count = sum(part_count))
+}
+```
+
+Function definition for applying transformation using `{dplyr}`
+
+:::
+::::

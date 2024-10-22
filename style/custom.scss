@@ -1,0 +1,55 @@
+$colors: (
+    "blue": #7aa6da,
+    "orange": #e7ad55,
+    "green": #65956d,
+    "green-light": #65956d9c
+);
+
+/*-- scss:defaults --*/
+
+@import url(https://fonts.googleapis.com/css?family=News+Cycle:400,700);
+@import url(https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic);
+
+// fonts
+$font-family-sans-serif: Lato, sans-serif !default;
+// $presentation-heading-font: "News Cycle", sans-serif !default;
+
+/*-- scss: rules --*/
+
+@each $name, $color in $colors {
+    .button-#{$name} {
+        background-color: $color;
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: block;
+        margin: 0 auto;
+        font-size: 1em;
+        border-radius: 12px;        
+    }
+}
+
+.v-center-container {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    height: 90%;
+}
+
+.overview-text {
+    /*text-align: center; */
+    /* This is not working */
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.smaller {
+    font-size: 0.8em;
+}
+
+
+.f50 {
+    font-size: 50%;
+  }

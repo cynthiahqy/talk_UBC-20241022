@@ -1,0 +1,124 @@
+# Unused Slides
+
+## Presentation Overview
+
+::: {.columns}
+
+::: {.column}
+
+- About Me!
+- Crossmaps Framework
+- CS Research (Collaboration) Opportunities
+    - Data provenance communication
+    - Interactive data merging (multi-table)
+- Other downstream projects
+
+:::
+::: {.column}
+::: {.fragment}
+:::{layout="[[-5,88,-5],[-5,90,-5],[-5,45,45,-5]]" layout-align="center"}
+
+[Domain Problem]{.button-light-green}
+
+[Task Abstraction]{.button-green}
+
+[Visual Encoding]{.button-blue}
+
+[Interactive Tools]{.button-blue}
+:::
+:::
+:::
+:::
+
+## Harmonising and Integrating Data
+
+- Opportunities to combine existing data for analysis abound,
+- Existing literature exists on a spectrum from conceptual to applied,
+- with keywords such as **data** *preprocessing*, *cleaning*, *fusion*, *integration*, *harmonisation* etc.
+
+![](images/illustrations/diagram_preprocessing-solutions.png){fig-align="center" height=350px}
+
+## Ex-Post Harmonisation 2/2
+
+::: {.columns .v-center-container}
+::: {.fragment .column width="33%"}
+![](images/illustrations/icon-official-stats.png){fig-align="center" height=200px style="margin: 0; padding: 0;"}
+
+*Defining or selecting mappings between classifications or taxonomies,*
+:::
+
+::: {.fragment .column width="33%"}
+![](images/illustrations/icon-database.png){fig-align="center" height=200px style="margin: 0; padding: 0; "}
+
+Implementing and validating mappings on given data,
+:::
+
+::: {.fragment .column width="33%"}
+![](images/illustrations/icon-IEEE-VIS.png){fig-align="center" height=200px style="margin: 0; padding: 0; "}
+
+Documenting and analysing the implemented mapping.
+:::
+:::
+
+## Existing Conceptual Contributions
+- Approaches and insights are scattered across "data science" fields:
+    - Multi-resolution, multi-phase and multi-source inference [@mengTrioInferenceProblems2014]
+    - Data wrangling workflows and domain specific languages [@kandelWranglerInteractivevisual2011; @wickhamTidyData2014]
+    - Guidelines for data quality and provenance for trustworthy research [@gebruDatasheetsDatasets2021; @pengReproducibleResearchComputational2011; @wilkinsonFAIRGuidingPrinciples2016]
+    - Frameworks for considering alternative preprocessing decisions[@steegenIncreasingTransparencyMultiverse2016; @blockerPotentialPerilsPreprocessing2013]
+
+## Existing Applied Contributions
+
+- Many attempts at domain-specific and general purpose tools exist:
+    - Survey Data Harmonisation [@kolczynskaCombiningMultipleSurvey2022]
+    - Data validation tools [@vanderlooDataValidationInfrastructure2021]
+    - Data provenance tracking and documentation [@lucchesiSmallsetTimelinesVisual2022]
+    - Interactive tools for *Multiverse Analysis*
+    [@sarmaMilliwaysTamingMultiverses2018; @liuBobaAuthoringVisualizing2021]
+
+## Implication
+- *extracting mapping logic from existing scripts*
+    - manipulate data input
+    - parse AST into computational graph
+
+## References
+
+Using existing research such as:
+
+[1] C. Wilson, E. Puerta, T. Crnovrsanin, S. D. Bartolomeo, and C. Dunne, “Evaluating and extending speedup techniques for optimal crossing minimization in layered graph drawings,” IEEE Trans. Visual. Comput. Graphics, pp. 1–11, 2024, doi: 10.1109/TVCG.2024.3456349.
+
+## Input + Mapping = Output 
+
+::: fragment
+
+The **crossmap transform** takes *(a data input)*:
+
+- _numeric values which form a conceptually shared mass and are indexed by a specific set of keys (e.g. occupation codes), a **shared mass array**_
+
+:::
+
+::: fragment
+and *(a mapping)*:
+
+- _redistributes the numeric values into a new set of index keys, according to a mapping, the **crossmap**, between the source and target keys_
+
+:::
+
+::: fragment
+produces *(recoded and redistributed output)*:
+
+- _a counter-factual **shared mass array** indexed by the target keys_
+:::
+
+## Recoding and Redistribution
+
+::: notes
+how this is different to schema resolution?
+:::
+
+-   Mappings always involve **recoding**, similar to schema resolution:
+    -   [`111212: Defence Force Senior Officer --> 0110: Commissioned armed forces officers`]{style="font-size: 0.6em"}
+-   In addition to these string-based lookups, **numeric redistribution** can include:
+    -   "pass-through" of numeric values -- i.e. one-to-unique relations
+    -   numeric aggregation -- i.e. one-to-shared relations
+    -   numeric redistribution -- i.e. one-to-many relations
